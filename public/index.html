@@ -1,0 +1,41 @@
+<input id ='msgbox' height='24pt'>
+<button id ='sendButton'>Send</button>
+<div id ='messages'></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js" =""></script>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.js"
+  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+  crossorigin="anonymous"></script>
+<script>
+	var username = prompt('Please enter your username')
+
+	var socket = io()
+
+	socket.on('confirConnection', function(data){
+		console.log('server: '+data)
+	})
+
+	socket.on('newUser', function(data){
+		console.log(data)
+	})
+
+	socket.on('newMsg',function(data){
+		$('#messages').append('<p>' + data + '<p>')
+	})
+
+	$('#sendButton').click(sendMsg)
+	$(document).on('keyup', function(e){
+		if(e.key == 'Enter'){
+			sendMsg()
+		}
+	})
+
+	function sendMsg(){
+		var msg = $('#msgbox').val()
+		console.log(msg)
+		$('#messages').append('<p><strong>'+username+':' + msg + '<p>')
+		$('#msgbox').val('');
+		socket.emit('newMsg','<p>'+username+':' + msg + '<p>')
+	}
+
+</script>
